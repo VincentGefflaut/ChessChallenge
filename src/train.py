@@ -56,7 +56,7 @@ def parse_args():
         help="Maximum context length"
     )
     parser.add_argument(
-        "--n_inner", type=int, default=223,
+        "--n_inner", type=int, default=219,
         help="Feed-forward inner dimension (default: 4 * n_embd)"
     )
     parser.add_argument(
@@ -221,6 +221,8 @@ def main():
         seed=args.seed,
         bf16=torch.cuda.is_available() and torch.cuda.is_bf16_supported(),
         report_to=["none"],
+        dataloader_num_workers=4,
+        dataloader_pin_memory=True,
     )
     
     # Create trainer
