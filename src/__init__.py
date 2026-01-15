@@ -2,6 +2,7 @@
 
 from .model import ChessConfig, ChessForCausalLM
 from .tokenizer import ChessTokenizer
+from .utils import count_parameters, print_parameter_budget
 
 # Lazy import for evaluate to avoid RuntimeWarning when running as module
 def __getattr__(name):
