@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 from typing import Dict, List, Optional
 
 from transformers import PreTrainedTokenizer
@@ -173,6 +174,17 @@ class ChessTokenizer(PreTrainedTokenizer):
         if max_samples is not None:
             dataset = dataset.select(range(min(max_samples, len(dataset))))
         
+        # Remove special suffixes and colors from moves in the dataset
+        def clean_text(example):
+            text = example[column]
+            text = re.sub(r'\([^)]*\)', '', text)
+            text = re.sub(r'[WB]', '', text)
+            text = re.sub(r'[PNBRQK]', '', text)
+            example[column] = text.strip()
+            return example
+            
+        dataset = dataset.map(clean_text)
+        
         def game_iterator():
             for example in dataset:
                 yield example[column]
@@ -191,14 +203,24 @@ class ChessTokenizer(PreTrainedTokenizer):
     def _tokenize(self, text: str) -> List[str]:
         """
         Tokenize a string of moves into a list of tokens.
-        
-        Args:
-            text: A string of space-separated moves.
-        
-        Returns:
-            List of move tokens.
         """
-        return text.strip().split()
+        moves = text.strip().split()
+        # Nettoyage des suffixes et couleurs pour normaliser les tokens
+        clean_moves = []
+        for m in moves:
+            # Check m is not a special token
+            if m in {self.PAD_TOKEN, self.BOS_TOKEN, self.EOS_TOKEN, self.UNK_TOKEN}:
+                clean_moves.append(m)
+            else:
+                # On retire tous les suffixes (x), (+), (+*), (o), (O)
+                m_clean = re.sub(r'\([^)]*\)', '', m)
+                # On retire les préfixes de couleur (W/B)
+                m_clean = re.sub(r'[WB]', '', m_clean)
+                # On retire les noms de pièces
+                m_clean = re.sub(r'[PNBRQK]', '', m_clean)
+                clean_moves.append(m_clean)
+            
+        return clean_moves
     
     def _convert_token_to_id(self, token: str) -> int:
         """Convert a token to its ID."""
