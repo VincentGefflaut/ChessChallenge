@@ -40,15 +40,15 @@ def parse_args():
         help="Vocabulary size"
     )
     parser.add_argument(
-        "--n_embd", type=int, default=128,
+        "--n_embd", type=int, default=112,
         help="Embedding dimension"
     )
     parser.add_argument(
-        "--n_layer", type=int, default=4,
+        "--n_layer", type=int, default=8,
         help="Number of transformer layers"
     )
     parser.add_argument(
-        "--n_head", type=int, default=4,
+        "--n_head", type=int, default=8,
         help="Number of attention heads"
     )
     parser.add_argument(
@@ -56,7 +56,7 @@ def parse_args():
         help="Maximum context length"
     )
     parser.add_argument(
-        "--n_inner", type=int, default=None,
+        "--n_inner", type=int, default=192,
         help="Feed-forward inner dimension (default: 4 * n_embd)"
     )
     parser.add_argument(
