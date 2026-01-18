@@ -56,7 +56,7 @@ def parse_args():
         help="Maximum context length"
     )
     parser.add_argument(
-        "--n_inner", type=int, default=219,
+        "--n_inner", type=int, default=307,
         help="Feed-forward inner dimension (default: 4 * n_embd)"
     )
     parser.add_argument(

@@ -49,6 +49,23 @@ class ChessTokenizer(PreTrainedTokenizer):
             **kwargs
         )
 
+    @classmethod
+    def build_vocab_from_dataset(
+        cls,
+        dataset_name: str = "",
+        split: str = "",
+        column: str = "",
+        min_frequency: int = 0,
+        max_samples: Optional[int] = None,
+    ) -> "ChessTokenizer":
+        """
+        Méthode de compatibilité. 
+        Pour le SquareTokenizer, le vocabulaire est fixe, 
+        on ignore donc les arguments et on retourne une instance standard.
+        """
+        print("Square Tokenizer: Using fixed deterministic vocabulary.")
+        return cls()
+
     def _create_square_vocab(self) -> Dict[str, int]:
         """Crée le vocabulaire fixe de cases (64) + promos (4) + spéciaux (4)."""
         special_tokens = [self.PAD_TOKEN, self.BOS_TOKEN, self.EOS_TOKEN, self.UNK_TOKEN]
